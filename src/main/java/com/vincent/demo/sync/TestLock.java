@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by xq on 17/6/26.
- */
+
 public class TestLock {
     private ArrayList<String> arrayList = new ArrayList<>();
     Lock lock = new ReentrantLock();
