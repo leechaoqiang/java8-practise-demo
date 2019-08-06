@@ -2,11 +2,13 @@ package com.vincent.demo.orika;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.vincent.demo.orika.dto.AuthorDTO;
 import com.vincent.demo.orika.dto.AuthorReqDto;
 import com.vincent.demo.orika.dto.BookDTO;
 import com.vincent.demo.orika.model.AuthorEntity;
 import com.vincent.demo.orika.model.AuthorReqBo;
 import com.vincent.demo.orika.model.BookEntity;
+import com.vincent.demo.utils.ReflectASMUtils;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -21,7 +23,8 @@ public class OrikaTest {
 
     public static void main(String[] args){
 //        testBookEntity2Dto();
-        testAuthorReqBo2Dto();
+//        testAuthorReqBo2Dto();
+        testAuthorEntity2Dto();
 
     }
 
@@ -56,6 +59,27 @@ public class OrikaTest {
         AuthorReqDto authorReqDto =    mapper.map(reqBo, AuthorReqDto.class);
 
         System.out.println("authorReqDto: "+JSON.toJSONString(authorReqDto));
+
+    }
+
+    public static void testAuthorEntity2Dto(){
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        MapperFacade mapper = mapperFactory.getMapperFacade();
+        Instant instant =  LocalDate.of(1952, Month.MARCH, 11).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+
+        AuthorEntity authorEntity = AuthorEntity.builder()
+                .authorId(Integer.valueOf(1))
+                .authorName("普希金")
+                .authorBirthday(Date.from(instant))
+                .desc("俄国注明大文豪")
+                .build();
+
+        System.out.println("authorEntity: "+JSON.toJSONString(authorEntity));
+//        AuthorDTO authorDto =  mapper.map(authorEntity, AuthorDTO.class);
+        AuthorDTO authorDto = new AuthorDTO();
+        ReflectASMUtils.copyProperties(authorEntity, authorDto);
+        System.out.println("authorDto: "+JSON.toJSONString(authorDto));
 
     }
 }
