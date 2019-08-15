@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveTask;
 
 /**
- * @Desc 对一个长度为10000000的元素值进行累加
+ * @Desc 对一个长度为100000000的数组的元素进行累加求和
  * @author   vincent.li
  * @version   1.0
  * @since    JDK 1.7
@@ -24,21 +24,21 @@ public class ForJoinPollTask {
             int temp = random.nextInt(50);
             arr[i]=Long.valueOf(temp).longValue() ;
         }
-        System.out.println("初始化数组完成");
+        System.out.println("数组初始化完成。。。");
         long start = System.currentTimeMillis();
         for(int i=0; i<len; i++){
             //对数组元素赋值，并将数组元素的值添加到sum总和中
             total += arr[i];
         }
         long timeCost = System.currentTimeMillis() - start;
-        System.out.println("初始化数组总和：" + total + ",耗时：" + timeCost + " ms");
+        System.out.println("for循环累加求和结果：" + total + ",耗时：" + timeCost + " ms");
         start = System.currentTimeMillis();
         SumTask task = new SumTask(arr, 0, len);
 //        创建一个通用池，这个是jdk1.8提供的功能
         ForkJoinPool pool = ForkJoinPool.commonPool();
         Future<Long> future = pool.submit(task); //提交分解的SumTask 任务
         timeCost = System.currentTimeMillis() - start;
-        System.out.println("多线程执行结果："+future.get()+ ",耗时：" + timeCost + " ms");
+        System.out.println("多线程执行求和结果："+future.get()+ ",耗时：" + timeCost + " ms");
         pool.shutdown(); //关闭线程池
     }
 
@@ -85,7 +85,8 @@ class SumTask extends RecursiveTask<Long> {
                 sum += arry[i];
             }
             return sum;
-        } else {//当end与start之间的差大于threshold，即要累加的数超过20个时候，将大任务分解成小任务
+        } else {
+            //当end与start之间的差大于threshold，即要累加的数超过50个时候，将大任务分解成小任务
             int middle = (start+ end)/2;
             SumTask left = new SumTask(arry, start, middle);
             SumTask right = new SumTask(arry, middle, end);
