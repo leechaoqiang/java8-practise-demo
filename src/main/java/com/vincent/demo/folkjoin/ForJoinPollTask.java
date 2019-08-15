@@ -15,14 +15,14 @@ import java.util.concurrent.RecursiveTask;
 public class ForJoinPollTask {
 
     public static void main(String[] args) throws Exception {
-        int[] arr = new int[10000000];
+        long[] arr = new long[100000000];
         Random random = new Random();
         long total =0L;
         int len = arr.length;
         //初始化10000000个数组元素
         for(int i=0; i<len; i++){
             int temp = random.nextInt(50);
-            arr[i]=temp;
+            arr[i]=Long.valueOf(temp).longValue() ;
         }
         System.out.println("初始化数组完成");
         long start = System.currentTimeMillis();
@@ -33,10 +33,10 @@ public class ForJoinPollTask {
         long timeCost = System.currentTimeMillis() - start;
         System.out.println("初始化数组总和：" + total + ",耗时：" + timeCost + " ms");
         start = System.currentTimeMillis();
-        SumTask task = new SumTask(arr, 0, arr.length);
+        SumTask task = new SumTask(arr, 0, len);
 //        创建一个通用池，这个是jdk1.8提供的功能
         ForkJoinPool pool = ForkJoinPool.commonPool();
-        Future<Integer> future = pool.submit(task); //提交分解的SumTask 任务
+        Future<Long> future = pool.submit(task); //提交分解的SumTask 任务
         timeCost = System.currentTimeMillis() - start;
         System.out.println("多线程执行结果："+future.get()+ ",耗时：" + timeCost + " ms");
         pool.shutdown(); //关闭线程池
@@ -52,9 +52,9 @@ public class ForJoinPollTask {
  * @version 1.0
  * @since JDK 1.7
  */
-class SumTask extends RecursiveTask<Integer>{
+class SumTask extends RecursiveTask<Long> {
     private static final int THRESHOLD = 50; //每个小任务 最多只累加50个数
-    private int arry[];
+    private long arry[];
     private int start;
     private int end;
 
@@ -67,7 +67,7 @@ class SumTask extends RecursiveTask<Integer>{
      * @param start
      * @param end
      */
-    public SumTask(int[] arry, int start, int end) {
+    public SumTask(long[] arry, int start, int end) {
         super();
         this.arry = arry;
         this.start = start;
@@ -77,15 +77,15 @@ class SumTask extends RecursiveTask<Integer>{
 
 
     @Override
-    protected Integer compute() {
-        int sum =0;
+    protected Long compute() {
+        long sum = 0L;
         //当end与start之间的差小于threshold时，开始进行实际的累加
-        if(end - start <THRESHOLD){
-            for(int i= start;i<end;i++){
+        if(end - start < THRESHOLD){
+            for(int i = start; i < end; i++){
                 sum += arry[i];
             }
             return sum;
-        }else {//当end与start之间的差大于threshold，即要累加的数超过20个时候，将大任务分解成小任务
+        } else {//当end与start之间的差大于threshold，即要累加的数超过20个时候，将大任务分解成小任务
             int middle = (start+ end)/2;
             SumTask left = new SumTask(arry, start, middle);
             SumTask right = new SumTask(arry, middle, end);
