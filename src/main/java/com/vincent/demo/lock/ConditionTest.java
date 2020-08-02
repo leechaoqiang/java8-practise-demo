@@ -57,7 +57,7 @@ public class ConditionTest {
             TimeUnit.MICROSECONDS.sleep(500);
             System.out.println(Thread.currentThread().getName() + " consume data = " + data);
             consumed = true; // 消费完将消费标识置为true
-            condition.signal(); // 解除await，哟领域通知生产者可以开始生产了
+            condition.signal(); // 解除await，有领域通知生产者可以开始生产了
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {

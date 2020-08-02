@@ -20,7 +20,6 @@ public class ClassLoaderTest {
         sun.misc.Launcher l = sun.misc.Launcher.getLauncher();
         System.out.println("sun.misc.Launcher ClassLoader is:"+l.getClassLoader().toString());
 
-
     }
 
 }

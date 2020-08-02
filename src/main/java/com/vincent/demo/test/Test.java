@@ -1,6 +1,9 @@
 package com.vincent.demo.test;
 
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
+
 public class Test {
 
     public static void main(String[] args){
@@ -13,6 +16,8 @@ public class Test {
         test2();
 
         method1();
+        AtomicLong atomicLong = new AtomicLong();
+        LongAdder  longAdder = new LongAdder();
 
 
     }
